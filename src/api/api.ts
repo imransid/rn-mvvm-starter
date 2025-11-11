@@ -6,7 +6,7 @@ import { logout } from '../features/auth/authSlice';
 
 // simple axios instance
 const api = axios.create({
-  baseURL: 'https://api.example.com',
+ baseURL: 'https://api.zenfamy.ai/api/v1',
   timeout: 15000,
 });
 

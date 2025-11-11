@@ -4,10 +4,13 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    ImageBackground,
     StyleSheet,
     Alert,
+    ActivityIndicator,
 } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { loginRequest } from "./authSlice";
+import { RootState } from "../../app/store";
 
 const Login: React.FC = () => {
     // -----------------------------
@@ -16,90 +19,100 @@ const Login: React.FC = () => {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [errors, setErrors] = useState<{ msg: string }[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+
+    const dispatch = useDispatch();
+    const { loading, error, access_token } = useSelector(
+        (state: RootState) => state.auth
+    );
 
     // -----------------------------
-    // Reset errors on input change
+    // Reset errors when user types
     // -----------------------------
     useEffect(() => {
         setErrors([]);
     }, [email, password]);
 
     // -----------------------------
-    // Handle login
+    // Watch for login success
+    // -----------------------------
+    useEffect(() => {
+        if (access_token) {
+            console.log("Login Success! Token:", access_token);
+            Alert.alert("Success", "Login successful!");
+            // TODO: Navigate to home screen
+            // navigation.replace("Home");
+        }
+    }, [access_token]);
+
+    // -----------------------------
+    // Handle login submit
     // -----------------------------
     const handleSubmit = () => {
+        console.log("Submitting Login:", { email, password });
+
         if (!email || !password) {
             setErrors([{ msg: "Please enter email and password" }]);
             return;
         }
 
-        setLoading(true);
-
-        // Simulate API call
-        setTimeout(() => {
-            setLoading(false);
-
-            // Dummy validation
-            if (email === "test@example.com" && password === "123456") {
-                Alert.alert("Success", "Login successful!");
-                // Navigate to Home screen here
-            } else {
-                setErrors([{ msg: "Invalid email or password" }]);
-            }
-        }, 1500);
+        // Dispatch login request to Redux Saga
+        dispatch(loginRequest({ email: email, password: password }));
     };
 
     return (
+        <View style={styles.container}>
+            <View style={styles.innerContainer}>
+                {/* Header Text */}
+                <Text style={styles.title}>Glad to see you again ✋🏻 MMK</Text>
+                <Text style={styles.subtitle}>
+                    Log in to access your saved preferences, continue where you stopped.
+                </Text>
 
-        <View style={styles.innerContainer}>
-            {/* Header Text */}
-            <Text style={styles.title}>Glad to see you again ✋🏻</Text>
-            <Text style={styles.subtitle}>
-                Log in to access your saved preferences, continue where you stopped.
-            </Text>
+                {/* Input Fields */}
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        placeholder="Enter your email"
+                        value={email}
+                        onChangeText={setEmail}
+                        style={styles.input}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                    />
+                    <TextInput
+                        placeholder="Enter your password"
+                        value={password}
+                        onChangeText={setPassword}
+                        style={styles.input}
+                        secureTextEntry
+                    />
 
-            {/* Input Fields */}
-            <View style={styles.inputContainer}>
-                <TextInput
-                    placeholder="Enter your email"
-                    value={email}
-                    onChangeText={setEmail}
-                    style={styles.input}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                />
-                <TextInput
-                    placeholder="Enter your password"
-                    value={password}
-                    onChangeText={setPassword}
-                    style={styles.input}
-                    secureTextEntry
-                />
+                    {/* Error Messages */}
+                    {errors.map((err, i) => (
+                        <Text key={i} style={styles.errorText}>
+                            {err.msg}
+                        </Text>
+                    ))}
+                    {error && <Text style={styles.errorText}>{error}</Text>}
 
-                {/* Error messages */}
-                {errors.map((err, i) => (
-                    <Text key={i} style={styles.errorText}>
-                        {err.msg}
-                    </Text>
-                ))}
+                    {/* Forgot Password */}
+                    <TouchableOpacity onPress={() => Alert.alert("Forgot Password")}>
+                        <Text style={styles.forgotText}>Forgot Password?</Text>
+                    </TouchableOpacity>
+                </View>
 
-                {/* Forgot Password */}
-                <TouchableOpacity onPress={() => Alert.alert("Forgot Password")}>
-                    <Text style={styles.forgotText}>Forgot Password?</Text>
+                {/* Submit Button */}
+                <TouchableOpacity
+                    style={[styles.button, loading && styles.buttonDisabled]}
+                    onPress={handleSubmit} // <-- fixed
+                    disabled={loading}
+                >
+                    {loading ? (
+                        <ActivityIndicator color="#fff" />
+                    ) : (
+                        <Text style={styles.buttonText}>Continue</Text>
+                    )}
                 </TouchableOpacity>
             </View>
-
-            {/* Submit Button */}
-            <TouchableOpacity
-                style={[styles.button, loading && styles.buttonDisabled]}
-                onPress={handleSubmit}
-                disabled={loading}
-            >
-                <Text style={styles.buttonText}>
-                    {loading ? "Loading..." : "Continue"}
-                </Text>
-            </TouchableOpacity>
         </View>
     );
 };
@@ -112,6 +125,7 @@ export default Login;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "#F9F9F9",
     },
     innerContainer: {
         flex: 1,

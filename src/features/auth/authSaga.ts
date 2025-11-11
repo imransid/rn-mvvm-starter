@@ -1,88 +1,58 @@
-import { call, put, takeLatest, all } from 'redux-saga/effects';
-import { PayloadAction } from '@reduxjs/toolkit';
-import api from '../../api/api';
-import {
-  loginRequest,
-  loginSuccess,
-  loginFailure,
-  logout,
-  setRefreshTime,
-} from './authSlice';
-import { saveTokens, getTokens, clearTokens } from '../../utils/secureStorage';
-import { SagaIterator } from 'redux-saga';
+import { call, put, takeLatest, all } from "redux-saga/effects";
+import { PayloadAction } from "@reduxjs/toolkit";
+import api from "../../api/api";
+import { loginRequest, loginSuccess, loginFailure } from "./authSlice";
+import { User } from "./authTypes";
+import { SagaIterator } from "redux-saga";
 
 // -----------------------------
 // Helper APIs
 // -----------------------------
 function loginApi(email: string, password: string) {
-  return api.post('/auth/login', { email, password });
+  return api.post("/auth/login", { email, password });
 }
 
-function refreshApi(refreshToken: string) {
-  return api.post('/auth/refresh', { refreshToken });
+function fetchProfileApi(token: string) {
+  return api.get("/users/me", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 }
 
 // -----------------------------
-// Worker saga
+// Worker
 // -----------------------------
-function* handleLogin(
-  action: PayloadAction<{ email: string; password: string }>,
-): SagaIterator {
+function* handleLogin(action: PayloadAction<{ email: string; password: string }>): SagaIterator {
   try {
-    const { email, password } = action.payload;
+    console.log("💡 Saga triggered", action.payload);
 
-    // Call login API
-    const { data } = yield call(loginApi, email, password);
+    // 1️⃣ Call login API
+    const response = yield call(loginApi, action.payload.email, action.payload.password);
+    console.log("Login response:", response.data);
 
-    const tokens = {
-      accessToken: data.accessToken,
-      refreshToken: data.refreshToken,
-    };
+    const { access_token }: { access_token: string } = response.data;
 
-    // Save tokens securely
-    yield call(saveTokens, tokens);
-
-    // Optionally fetch profile
-    const { data: profile } = yield call(api.get, '/me');
-
-    // Dispatch login success
-    yield put(loginSuccess({ user: profile }));
-  } catch (err: any) {
-    yield put(loginFailure({ error: err?.message || 'Login failed' }));
-  }
-}
-
-// -----------------------------
-// Token refresh flow
-// -----------------------------
-function* refreshFlow(): SagaIterator<string | null> {
-  try {
-    const tokens = yield call(getTokens);
-    if (!tokens?.refreshToken) {
-      yield put(logout());
-      return null;
+    if (!access_token) {
+      throw new Error("No access token returned from login");
     }
 
-    const { data } = yield call(refreshApi, tokens.refreshToken);
-    const newTokens = {
-      accessToken: data.accessToken,
-      refreshToken: data.refreshToken,
-    };
+    // 2️⃣ Call profile API with token
+    const profileResponse = yield call(fetchProfileApi, access_token);
+    const user: User = profileResponse.data;
 
-    yield call(saveTokens, newTokens);
-    yield put(setRefreshTime());
+    console.log("Profile fetched:", user);
 
-    return newTokens.accessToken;
-  } catch (err) {
-    yield call(clearTokens);
-    yield put(logout());
-    return null;
+    // 3️⃣ Dispatch login success
+    yield put(loginSuccess({ user, access_token }));
+  } catch (err: any) {
+    console.error("Login failed in saga:", err.message);
+    yield put(loginFailure({ error: err?.message || "Login failed" }));
   }
 }
 
 // -----------------------------
-// Watcher saga
+// Watcher
 // -----------------------------
 export default function* authSaga(): SagaIterator {
+  console.log("👀 authSaga running");
   yield all([takeLatest(loginRequest.type, handleLogin)]);
 }

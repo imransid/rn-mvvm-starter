@@ -15,23 +15,23 @@ export default function AppNavigator() {
     const dispatch = useDispatch();
 
     // on app mount, attempt to restore session from secure tokens
-    useEffect(() => {
-        (async () => {
-            const tokens = await getTokens();
-            if (tokens?.accessToken) {
-                // optionally validate token: call /me to load profile
-                try {
-                    const { data } = await (await import("../api/api")).default.get("/me");
-                    dispatch(restoreSession({ user: data }));
-                } catch {
-                    // token invalid -> try refresh or logout
-                    dispatch(restoreSession({ user: null }));
-                }
-            } else {
-                dispatch(restoreSession({ user: null }));
-            }
-        })();
-    }, [dispatch]);
+    // useEffect(() => {
+    //     (async () => {
+    //         const tokens = await getTokens();
+    //         if (tokens?.accessToken) {
+    //             // optionally validate token: call /me to load profile
+    //             try {
+    //                 const { data } = await (await import("../api/api")).default.get("/me");
+    //                 dispatch(restoreSession({ user: data }));
+    //             } catch {
+    //                 // token invalid -> try refresh or logout
+    //                 dispatch(restoreSession({ user: null }));
+    //             }
+    //         } else {
+    //             dispatch(restoreSession({ user: null }));
+    //         }
+    //     })();
+    // }, [dispatch]);
 
     return (
         <NavigationContainer>
