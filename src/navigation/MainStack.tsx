@@ -11,7 +11,11 @@ const Stack = createNativeStackNavigator<MainStackParamList>();
 
 export default function MainStack() {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+            screenOptions={{
+                headerShown: false, // disables header for all screens
+            }}
+        >
             <Stack.Screen name="Home" component={HomeScreen} />
         </Stack.Navigator>
     );

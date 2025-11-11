@@ -1,9 +1,37 @@
+export interface ActiveToken {
+  token_id: number;
+  user_id: number;
+  refresh_token: string;
+  issued_at: string;
+  revoked_at: string | null;
+  log_id?: number;
+  action?: string;
+  ip_address?: string | null;
+  user_agent?: string | null;
+  cre_date?: string;
+}
 
 export interface User {
-  id?: string;
-  name?: string;
-  email?: string;
-  role?: string;
+  user_id: number;
+  first_name: string;
+  last_name?: string;
+  email: string;
+  onboarding_step?: string | null;
+  gender?: string;
+  birth_date?: string | null;
+  preferred_language?: string;
+  country?: string;
+  role: string;
+  family_id?: number;
+  cre_date?: string;
+  mod_date?: string;
+  del_date?: string | null;
+  last_mod_by?: string | null;
+  is_email_verified?: boolean;
+  email_verified_at?: string;
+  password_reset_at?: string | null;
+  avatar_url?: string | null;
+  active_tokens?: ActiveToken[];
 }
 
 export interface ConnectedDevice {
@@ -13,7 +41,7 @@ export interface ConnectedDevice {
   lastActive: string;
 }
 
- export interface AuthState {
+export interface AuthState {
   users: User[];
   user: User | null;
   isAuthenticated: boolean;
@@ -26,7 +54,7 @@ export interface ConnectedDevice {
   lastRefreshTime: number | null;
 }
 
-export  const initialState: AuthState = {
+export const initialState: AuthState = {
   users: [],
   user: null,
   isAuthenticated: false,
@@ -38,3 +66,8 @@ export  const initialState: AuthState = {
   error: null,
   lastRefreshTime: null,
 };
+
+export interface Tokens {
+  accessToken: string;
+  refreshToken?: string; // optional if you have refresh token
+}

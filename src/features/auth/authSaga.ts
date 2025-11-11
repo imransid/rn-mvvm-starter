@@ -4,6 +4,7 @@ import api from "../../api/api";
 import { loginRequest, loginSuccess, loginFailure } from "./authSlice";
 import { User } from "./authTypes";
 import { SagaIterator } from "redux-saga";
+import { saveTokens } from "../../utils/secureStorage";
 
 // -----------------------------
 // Helper APIs
@@ -27,20 +28,17 @@ function* handleLogin(action: PayloadAction<{ email: string; password: string }>
 
     // 1️⃣ Call login API
     const response = yield call(loginApi, action.payload.email, action.payload.password);
-    console.log("Login response:", response.data);
+    console.log("Login response: is", response.data);
 
     const { access_token }: { access_token: string } = response.data;
 
     if (!access_token) {
       throw new Error("No access token returned from login");
     }
-
+    yield call(saveTokens, { accessToken: access_token, refreshToken: response.data.refresh_token });
     // 2️⃣ Call profile API with token
     const profileResponse = yield call(fetchProfileApi, access_token);
     const user: User = profileResponse.data;
-
-    console.log("Profile fetched:", user);
-
     // 3️⃣ Dispatch login success
     yield put(loginSuccess({ user, access_token }));
   } catch (err: any) {
@@ -53,6 +51,5 @@ function* handleLogin(action: PayloadAction<{ email: string; password: string }>
 // Watcher
 // -----------------------------
 export default function* authSaga(): SagaIterator {
-  console.log("👀 authSaga running");
   yield all([takeLatest(loginRequest.type, handleLogin)]);
 }

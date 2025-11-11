@@ -11,7 +11,7 @@ import { restoreSession } from "../features/auth/authSlice";
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
-    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+    const isAuthenticated = useSelector((state: RootState) => state.root.auth.isAuthenticated);
     const dispatch = useDispatch();
 
     // on app mount, attempt to restore session from secure tokens
