@@ -21,6 +21,7 @@ import Journal from "./Journal";
 import { CustomButton } from "../auth/LoginScreen";
 import { colors } from "../../assets/lib";
 import ChildrenScroller from "./ChildrenScroller";
+import Tips from "./Tips";
 // import { getMyChild } from "@/redux/slices/childSlice";
 // import { getRecommendations } from "@/redux/slices/recomendation";
 
@@ -151,7 +152,7 @@ const HomeScreen = () => {
                             <Text style={styles.seeMore}>See more</Text>
                         </TouchableOpacity>
                     </View>
-                    {/* <Tips activity={false} name="advice" /> */}
+                    <Tips activity={false} name="advice" />
 
                     <View style={[styles.subSectionHeader, { marginTop: 12 }]}>
                         <Text style={styles.subSectionTitle}>Activity</Text>

@@ -5,6 +5,7 @@ import Button from "../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/types";
+import Header from "./Header";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -19,8 +20,8 @@ const Index: React.FC = () => {
         >
             {/* Replace your Header component if needed */}
             <View style={styles.header}>
-                {/* <Header elementNo={1} /> */}
-                <Text style={styles.headerText}>Header Placeholder</Text>
+                <Header elementNo={1} />
+                {/* <Text style={styles.headerText}>Header Placeholder</Text> */}
             </View>
 
             <View style={styles.content}>

@@ -9,6 +9,7 @@ import { RootState } from "../app/store";
 import TutorialStep3 from "../features/tutorial/TutorialStep3";
 import TutorialStep4 from "../features/tutorial/TutorialStep4";
 import TutorialStep5 from "../features/tutorial/TutorialStep5";
+import OnBoard from "../features/onboarding"
 
 
 export type MainStackParamList = {
@@ -20,6 +21,7 @@ export type MainStackParamList = {
     TutorialStep3: undefined
     TutorialStep4: undefined
     TutorialStep5: undefined
+    OnBoard: undefined
 };
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
@@ -34,8 +36,10 @@ export default function MainStack() {
                 headerShown: false, // disables header for all screens
             }}
         >
+            <Stack.Screen name="OnBoard" component={OnBoard} />
             {!tutorialStatus && <Stack.Screen name="Tutorial" component={Tutorial} />}
             <Stack.Screen name="Home" component={HomeScreen} />
+
             <Stack.Screen name="TutorialStep1" component={TutorialStep1} />
             <Stack.Screen name="TutorialStep2" component={TutorialStep2} />
             <Stack.Screen name="TutorialStep3" component={TutorialStep3} />

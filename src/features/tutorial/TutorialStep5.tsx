@@ -12,6 +12,12 @@ type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 const Tutorial6: React.FC = () => {
     const navigation = useNavigation<NavigationProp>();
 
+    const onClick = () => {
+
+        //  we can save if want
+        navigation.navigate("Home")
+    }
+
     return (
         <ImageBackground
             source={require("../../assets/images/bg/greenshadow.png")}
@@ -38,7 +44,7 @@ const Tutorial6: React.FC = () => {
                     name="Go to dashboard"
                     textColor="#fff"
                     bgColor={colors.primaryButton}
-                    onclick={() => navigation.navigate("Home")} // Replace with your main dashboard route
+                    onclick={() => onClick()}
                 />
             </View>
         </ImageBackground>

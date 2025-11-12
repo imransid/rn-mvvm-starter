@@ -34,6 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0546A48F2EC43F950060373C /* zenfamy-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "zenfamy-Bridging-Header.h"; sourceTree = "<group>"; };
 		054AD3A92EC36F1C00099F6A /* AntDesign.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AntDesign.ttf; sourceTree = "<group>"; };
 		054AD3AA2EC36F1C00099F6A /* Entypo.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Entypo.ttf; sourceTree = "<group>"; };
 		054AD3AB2EC36F1C00099F6A /* EvilIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = EvilIcons.ttf; sourceTree = "<group>"; };
@@ -106,6 +107,7 @@
 		13B07FAE1A68108700A75B9A /* zenfamy */ = {
 			isa = PBXGroup;
 			children = (
+				0546A48F2EC43F950060373C /* zenfamy-Bridging-Header.h */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,

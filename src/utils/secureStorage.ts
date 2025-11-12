@@ -1,7 +1,7 @@
 import * as Keychain from 'react-native-keychain';
 import { Tokens } from '../features/auth/authTypes';
 
-const TOKEN_SERVICE = 'com.yourapp.auth';
+const TOKEN_SERVICE = 'com.rafa.auth';
 
 export const saveTokens = async (tokens: Tokens) => {
   const payload = JSON.stringify(tokens);
