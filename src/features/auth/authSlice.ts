@@ -11,8 +11,6 @@ const authSlice = createSlice({
     // LOGIN FLOW
     // -----------------------------
     loginRequest(state, _action: PayloadAction<{ email: string; password: string }>) {
-
-      console.log("okokok", loginRequest.type)
       state.loading = true;
       state.error = null;
     },
@@ -39,11 +37,27 @@ const authSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    registerSuccess(state, _action: PayloadAction<User>) {
+    registerSuccess(state) {
       state.loading = false;
       state.error = null;
     },
     registerFailure(state, action: PayloadAction<{ error: string }>) {
+      state.loading = false;
+      state.error = action.payload.error;
+    },
+
+    // -----------------------------
+    // FORGOT PASSWORD FLOW
+    // -----------------------------
+    forgotPasswordRequest(state, _action: PayloadAction<any>) {
+      state.loading = true;
+      state.error = null;
+    },
+    forgotPasswordSuccess(state) {
+      state.loading = false;
+      state.error = null;
+    },
+    forgotPasswordFailure(state, action: PayloadAction<{ error: string }>) {
       state.loading = false;
       state.error = action.payload.error;
     },
@@ -82,6 +96,15 @@ const authSlice = createSlice({
       state.isAuthenticated = !!action.payload.user;
     },
 
+
+    // force loader 
+    setForceStopLoader(state) {
+      state.loading = false;
+    },
+    setForceStartLoader(state) {
+      state.loading = true;
+    },
+
     // -----------------------------
     // LOGOUT
     // -----------------------------
@@ -109,6 +132,11 @@ export const {
   setRefreshTime,
   restoreSession,
   logout,
+  setForceStopLoader,
+  setForceStartLoader,
+  forgotPasswordRequest,
+  forgotPasswordSuccess,
+  forgotPasswordFailure
 } = authSlice.actions;
 
 export default authSlice.reducer;

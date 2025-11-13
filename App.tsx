@@ -5,7 +5,7 @@ import { ActivityIndicator, View, StyleSheet } from "react-native";
 
 import { store, persistor } from "./src/app/store";
 import AppNavigator from "./src/navigation/AppNavigator";
-
+import { AlertNotificationRoot } from "react-native-alert-notification";
 import SplashScreen from "react-native-splash-screen"
 
 const App: React.FC = () => {
@@ -27,7 +27,10 @@ const App: React.FC = () => {
         }
         persistor={persistor}
       >
-        <AppNavigator />
+        <AlertNotificationRoot>
+          <AppNavigator />
+        </AlertNotificationRoot>
+
       </PersistGate>
     </Provider>
   );

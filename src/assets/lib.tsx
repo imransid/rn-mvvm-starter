@@ -1,5 +1,4 @@
 import { ALERT_TYPE, Toast } from "react-native-alert-notification"
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const colors = {
   primaryButton: "#1AA7A9",
@@ -13,10 +12,10 @@ export const colors = {
   primaryBg: "#effaff",
 }
 
-export const toasts = (message: string) => {
+export const toasts = (message: string, type?: "success" | "error") => {
   Toast.show({
-    type: message.match('success') ? ALERT_TYPE.SUCCESS : ALERT_TYPE.DANGER,
-    title: message.match('success') ? 'Success' : 'Error',
+    type: type === "success" ? ALERT_TYPE.SUCCESS : ALERT_TYPE.DANGER,
+    title: message.match('success') || type === "success" ? 'Success' : 'Error',
     textBody: message,
   })
 }

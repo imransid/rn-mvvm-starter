@@ -1,10 +1,10 @@
 import { colors } from '../../assets/lib';
 import Button from '../Button';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../navigation/types';
+import { AuthStackParamList, RootStackParamList } from '../../navigation/types';
 
 interface EmptyScreenProps {
     title?: string;
@@ -15,6 +15,7 @@ interface EmptyScreenProps {
 }
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+type EmptyScreenRouteProp = RouteProp<AuthStackParamList, "EmptyScreen">;
 
 const EmptyScreen: React.FC<EmptyScreenProps> = ({
     title,
@@ -25,9 +26,15 @@ const EmptyScreen: React.FC<EmptyScreenProps> = ({
 }) => {
     const navigation = useNavigation<NavigationProp>();
 
+    const { params } = useRoute<EmptyScreenRouteProp>();
+
+    // 🧠 decide which route to navigate to
+    const targetRoute = params?.nav || route || 'Home';
+
     // ✅ correct navigation call
     const handlePress = () => {
-        switch (route) {
+
+        switch (targetRoute) {
             case 'Home':
                 navigation.navigate('Home');
                 break;

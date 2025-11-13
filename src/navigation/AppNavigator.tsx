@@ -5,33 +5,28 @@ import AuthStack from "./AuthStack";
 import MainStack from "./MainStack";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../app/store";
-import { getTokens } from "../utils/secureStorage";
-import { restoreSession } from "../features/auth/authSlice";
+import { clearTokens } from "../utils/secureStorage";
+import { setForceStopLoader } from "../features/auth/authSlice";
 
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
     const isAuthenticated = useSelector((state: RootState) => state.root.auth.isAuthenticated);
+    const loading = useSelector((state: RootState) => state.root.auth.loading);
+    const dispatch = useDispatch<any>();
 
+    useEffect(() => {
+        const handleAuthState = async () => {
+            if (loading) {
+                dispatch(setForceStopLoader());
+            }
+            if (!isAuthenticated) {
+                await clearTokens();
+            }
+        };
 
-    // on app mount, attempt to restore session from secure tokens
-    // useEffect(() => {
-    //     (async () => {
-    //         const tokens = await getTokens();
-    //         if (tokens?.accessToken) {
-    //             // optionally validate token: call /me to load profile
-    //             try {
-    //                 const { data } = await (await import("../api/api")).default.get("/me");
-    //                 dispatch(restoreSession({ user: data }));
-    //             } catch {
-    //                 // token invalid -> try refresh or logout
-    //                 dispatch(restoreSession({ user: null }));
-    //             }
-    //         } else {
-    //             dispatch(restoreSession({ user: null }));
-    //         }
-    //     })();
-    // }, [dispatch]);
+        handleAuthState();
+    }, [loading, isAuthenticated, dispatch]);
 
     return (
         <NavigationContainer>

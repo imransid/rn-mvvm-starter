@@ -5,5 +5,18 @@ export type RootStackParamList = {
   Tutorial2: undefined;
   TutorialStep1: undefined;
   Profile: { userId: string };
+  EmptyScreen: { nav?: string }; 
+   WelcomeAuth: undefined;
   // add other routes here
+};
+
+export type AuthStackParamList = {
+  OnBoard: undefined;
+  WelcomeAuth: undefined;
+  Login: undefined;
+  Register: undefined;
+  ForgotPassword: undefined;
+  Verify: { email: string };
+  ResetPassword: {otp : string, email: string};
+  EmptyScreen: { nav?: string }; 
 };

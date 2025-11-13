@@ -31,8 +31,6 @@ const SplashScreen: React.FC = () => {
         const fetchTokenAndStart = async () => {
             const savedToken: any = await getTokens();
 
-            console.log('savedToken', savedToken)
-
             setShowLoadingBar(true);
 
             let elapsed = 0;
@@ -45,7 +43,7 @@ const SplashScreen: React.FC = () => {
                     if (savedToken) {
                         navigation.replace("Home");
                     } else {
-                        navigation.replace("Login");
+                        navigation.navigate("WelcomeAuth" as never);
                     }
                 }
             }, 200);

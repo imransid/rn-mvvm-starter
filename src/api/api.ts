@@ -26,6 +26,7 @@ api.interceptors.response.use(
   async error => {
     // Let saga handle refresh flow. We just surface 401 to sagas if needed.
     const status = error?.response?.status;
+
     if (status === 401) {
       // Optionally throw a specific error shape
       return Promise.reject({ ...error, __isAuthError: true });
