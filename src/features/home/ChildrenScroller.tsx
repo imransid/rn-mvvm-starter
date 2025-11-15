@@ -12,13 +12,13 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useGetMyChildrenQuery } from "../../api/childrenApi";
+import { useDispatch } from "react-redux";
+import { selectChild } from "./homeSlice";
+import { Child } from "./homeTypes";
 
 // ---- Types ----
-interface Child {
-    id: string | number;
-    first_name: string;
-    avatarUrl?: string;
-}
+
+
 
 interface Colors {
     primaryTextColor: string;
@@ -32,12 +32,9 @@ interface Props {
 // ---- Component ----
 const ChildrenScroller: React.FC<Props> = ({ onPressChild, colors }) => {
     const navigation = useNavigation();
-
+    const dispatch = useDispatch<any>();
     // RTK Query hook
     const { data: children, isLoading, isError } = useGetMyChildrenQuery();
-
-
-    console.log('data', children)
 
     const fallbackAvatar = useMemo<ImageSourcePropType>(
         () => require("../../assets/images/imoji/animoji.png"),
@@ -47,6 +44,7 @@ const ChildrenScroller: React.FC<Props> = ({ onPressChild, colors }) => {
     const handlePress = useCallback(
         (child: Child) => {
             onPressChild?.(child);
+            dispatch(selectChild(child))
         },
         [onPressChild]
     );
@@ -115,7 +113,7 @@ const ChildrenScroller: React.FC<Props> = ({ onPressChild, colors }) => {
         return (
             <View style={{ marginTop: -72, paddingHorizontal: 16, alignItems: "center", paddingVertical: 24 }}>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate("ChildCreate" as never)}
+                    onPress={() => navigation.navigate("AddChild" as never)}
                     style={{ alignItems: "center", padding: 16 }}
                 >
                     <View
@@ -145,7 +143,7 @@ const ChildrenScroller: React.FC<Props> = ({ onPressChild, colors }) => {
         <View style={{ flexDirection: "row", alignItems: "center", marginTop: -70 }}>
             {/* Add button */}
             <TouchableOpacity
-                onPress={() => navigation.navigate("ChildCreate" as never)}
+                onPress={() => navigation.navigate("AddChild" as never)}
                 style={{ alignItems: "center", padding: 16 }}
             >
                 <View

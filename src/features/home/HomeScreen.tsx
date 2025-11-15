@@ -11,60 +11,31 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Svg, { Path } from "react-native-svg";
 import { useDispatch, useSelector } from "react-redux";
-// import { router } from "expo-router";
-
-// import MainNav from "@/components/Navigation/MainNav";
-// import ChildrenScroller from "./compoents/children";
 import Journal from "./Journal";
-// import Quiz from "./compoents/Quiz";
-// import Tips from "./compoents/Tips";
+
 import { CustomButton } from "../auth/LoginScreen";
 import { colors } from "../../assets/lib";
 import ChildrenScroller from "./ChildrenScroller";
 import Tips from "./Tips";
-// import { getMyChild } from "@/redux/slices/childSlice";
-// import { getRecommendations } from "@/redux/slices/recomendation";
+import MainNav from "./MainNav";
+import Quiz from "./QuizScreen";
+import { useNavigation } from "@react-navigation/native";
+
 
 const HomeScreen = () => {
     const dispatch = useDispatch<any>();
     const children_list = []//useSelector((s: any) => s.childs.childs);
     const selectedChild = null
 
-    //useSelector(
-    //     (state: any) => state.childs.selectedChild
-    // );
-
-    // Fetch children
+    const navigation = useNavigation<any>();
     useEffect(() => {
-        // if (children_list?.length) return;
-        // const promise = dispatch(getMyChild());
-        // return () => {
-        //     promise.abort?.();
-        // };
+
     }, [dispatch, children_list?.length]);
 
     // Fetch recommendations
     useEffect(() => {
-        // const fetchRecommendations = async () => {
-        //     if (selectedChild?.child_id !== undefined) {
-        //         try {
-        //             await dispatch(
-        //                 getRecommendations({
-        //                     child_id: selectedChild.child_id,
-        //                     recommendation_type: "advice",
-        //                     skip: 0,
-        //                     limit: 50,
-        //                 })
-        //             ).unwrap();
-        //         } catch (error) {
-        //             console.error("Error fetching recommendations:", error);
-        //         }
-        //     }
-        // };
 
-        // if (selectedChild?.child_id) {
-        //     fetchRecommendations();
-        // }
+
     }, [dispatch, selectedChild]);
 
     return (
@@ -127,8 +98,7 @@ const HomeScreen = () => {
                         <Text style={styles.sectionTitle}>Journal</Text>
                         <TouchableOpacity onPress={() =>
 
-                            console.log("journal")
-                            //router.push("/journal")
+                            navigation.navigate("journals")
 
                         }>
                             <Text style={styles.seeMore}>See more</Text>
@@ -171,7 +141,7 @@ const HomeScreen = () => {
                     <View style={styles.sectionHeader}>
                         <Text style={styles.sectionTitle}>Quiz</Text>
                     </View>
-                    {/* <Quiz /> */}
+                    <Quiz />
                 </View>
 
                 {/* Story Section */}
@@ -225,7 +195,7 @@ const HomeScreen = () => {
                 <View style={{ height: 150 }} />
             </ScrollView>
 
-            {/* <MainNav screen="home" /> */}
+            <MainNav screen="home" />
         </>
     );
 };

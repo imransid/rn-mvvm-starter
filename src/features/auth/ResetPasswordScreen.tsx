@@ -64,7 +64,6 @@ const ResetPassword = () => {
             toasts("Password reset successful!", "success");
             setShowModal(true);
 
-            console.log("✅ API Response:", response);
         } catch (error: any) {
             console.error("❌ Reset Password Error:", error);
             toasts(error.message || "Failed to reset password");

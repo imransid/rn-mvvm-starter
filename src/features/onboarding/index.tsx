@@ -8,13 +8,14 @@ import {
     Dimensions,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toasts } from "../../assets/lib";
 import { getTokens } from '../../utils/secureStorage';
 // import { getUsers, tokenset } from "@/redux/slices/userSlices";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/types"
+import { RootState } from "../../app/store";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -24,6 +25,8 @@ const SplashScreen: React.FC = () => {
 
     const dispatch = useDispatch<any>();
     const navigation = useNavigation<NavigationProp>();
+    const tutorialStatus = useSelector((state: RootState) => state.root.auth.tutorialStatus);
+    const token = useSelector((state: RootState) => state.root.auth.access_token);
 
     useEffect(() => {
         let timer: any;
@@ -40,8 +43,8 @@ const SplashScreen: React.FC = () => {
 
                 if (elapsed >= 239) {
                     clearInterval(timer);
-                    if (savedToken) {
-                        navigation.replace("Home");
+                    if (savedToken && token !== '') {
+                        tutorialStatus ? navigation.navigate("Tutorial" as never) : navigation.navigate("Home" as never);
                     } else {
                         navigation.navigate("WelcomeAuth" as never);
                     }

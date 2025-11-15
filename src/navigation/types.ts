@@ -7,6 +7,7 @@ export type RootStackParamList = {
   Profile: { userId: string };
   EmptyScreen: { nav?: string }; 
    WelcomeAuth: undefined;
+   SurveyQuestion: {session ?: any}
   // add other routes here
 };
 

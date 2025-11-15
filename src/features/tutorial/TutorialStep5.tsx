@@ -6,14 +6,17 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { MainStackParamList } from "../../navigation/MainStack";
 import { colors } from "../../assets/lib";
+import { useDispatch } from "react-redux";
+import { setTutorialStatus } from "../auth/authSlice";
 
 type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 const Tutorial6: React.FC = () => {
     const navigation = useNavigation<NavigationProp>();
-
+    const dispatch = useDispatch<any>();
     const onClick = () => {
 
+        dispatch(setTutorialStatus())
         //  we can save if want
         navigation.navigate("Home")
     }

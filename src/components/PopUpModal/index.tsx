@@ -5,6 +5,7 @@ import Button from "../Button";
 import { colors } from "../../assets/lib";
 
 interface PopUpModalProps {
+    visible?: boolean; // add this
     image?: any;
     title?: string;
     description?: string;
@@ -15,6 +16,7 @@ interface PopUpModalProps {
 }
 
 const PopUpModal: React.FC<PopUpModalProps> = ({
+    visible, // add thiss
     image,
     title,
     description,
@@ -23,8 +25,11 @@ const PopUpModal: React.FC<PopUpModalProps> = ({
     button2,
     style,
 }) => {
+
+    console.log('opened')
+
     return (
-        <Modal transparent animationType="fade" visible>
+        <Modal transparent animationType="fade" visible={visible ? visible : true} >
             <View style={[styles.overlay, style]}>
                 <View style={styles.modalBox}>
                     <View style={styles.content}>

@@ -66,7 +66,7 @@ export const initialState: AuthState = {
   access_token: null,
   error: null,
   lastRefreshTime: null,
-  tutorialStatus: false
+  tutorialStatus: true
 };
 
 export interface Tokens {

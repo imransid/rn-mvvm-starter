@@ -75,7 +75,7 @@ const Journal: React.FC = () => {
 
             <CustomButton
                 text="+ Add Event"
-                onPress={() => navigation.navigate("JournalCreate" as any)}
+                onPress={() => navigation.navigate("AddJournal" as any)}
             />
         </ScrollView>
     );

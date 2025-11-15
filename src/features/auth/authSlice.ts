@@ -105,6 +105,12 @@ const authSlice = createSlice({
       state.loading = true;
     },
 
+
+    // set tutorial status
+    setTutorialStatus(state){
+      state.tutorialStatus = false
+    },
+
     // -----------------------------
     // LOGOUT
     // -----------------------------
@@ -115,6 +121,7 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
       state.connectedDevices = [];
+      state.tutorialStatus = true
     },
   },
 });
@@ -136,7 +143,8 @@ export const {
   setForceStartLoader,
   forgotPasswordRequest,
   forgotPasswordSuccess,
-  forgotPasswordFailure
+  forgotPasswordFailure,
+  setTutorialStatus
 } = authSlice.actions;
 
 export default authSlice.reducer;

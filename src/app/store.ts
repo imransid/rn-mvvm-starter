@@ -7,7 +7,9 @@ import logger from 'redux-logger';
 import rootReducer from './rootReducer';
 import rootSaga from './rootSaga';
 import { childApi } from '../api/childrenApi';
-import { journalApi } from '../api/journalApi'; // <-- import journalApi
+import { journalApi } from '../api/journalApi'; 
+import {quizApi} from "../api/quizApi"
+import {storiesApi} from "../api/storiesApi"
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -15,7 +17,7 @@ const sagaMiddleware = createSagaMiddleware();
 const persistConfig: PersistConfig<ReturnType<typeof rootReducer>> = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['auth'], // only persist auth slice
+  whitelist: ['auth', 'quiz'], // only persist auth slice
 };
 
 // Wrap root reducer with persistReducer
@@ -27,6 +29,8 @@ export const store = configureStore({
     root: persistedReducer,
     [childApi.reducerPath]: childApi.reducer,
     [journalApi.reducerPath]: journalApi.reducer, // <-- add journalApi reducer
+    [quizApi.reducerPath]: quizApi.reducer,
+    [storiesApi.reducerPath]: storiesApi.reducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -36,6 +40,8 @@ export const store = configureStore({
       .prepend(sagaMiddleware)
       .concat(childApi.middleware)
       .concat(journalApi.middleware) 
+      .concat(quizApi.middleware)
+       .concat(storiesApi.middleware)
       .concat(__DEV__ ? [logger] : []),
   devTools: __DEV__,
 });
