@@ -31,6 +31,9 @@ import PremiumSubscriptionScreen from "../features/subscription/SubscriptionScre
 import MySubscriptionScreen from "../features/subscription/MyPlanScreen"
 import PlanSubscriptionScreen from "../features/subscription/PlanScreen"
 import SubscriptionCancellationScreen from "../features/subscription/SubscriptionCancellationScreen"
+import StoryScreen from "../features/stories/StoryScreen"
+import CreateStoryScreen from "../features/stories/CreateStoryScreen"
+import PlayStoryScreen from "../features/stories/PlayScreen"
 
 export type MainStackParamList = {
     Home: undefined;
@@ -62,6 +65,9 @@ export type MainStackParamList = {
     MySubscriptionScreen: undefined
     PlanSubscriptionScreen: undefined
     SubscriptionCancellationScreen: undefined
+    StoryScreen: undefined
+    CreateStoryScreen: undefined
+    PlayStoryScreen: undefined
 };
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
@@ -109,12 +115,13 @@ export default function MainStack() {
             <Stack.Screen name="PlanSubscriptionScreen" component={PlanSubscriptionScreen} />
 
             <Stack.Screen name="AboutScreen" component={AboutScreen} />
-
             <Stack.Screen name="SubscriptionCancellationScreen" component={SubscriptionCancellationScreen} />
 
 
 
-
+            <Stack.Screen name="StoryScreen" component={StoryScreen} />
+            <Stack.Screen name="CreateStoryScreen" component={CreateStoryScreen} />
+            <Stack.Screen name="PlayStoryScreen" component={PlayStoryScreen} />
 
 
 

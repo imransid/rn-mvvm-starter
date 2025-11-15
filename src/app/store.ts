@@ -12,6 +12,7 @@ import {quizApi} from "../api/quizApi"
 import {storiesApi} from "../api/storiesApi"
 import {deviceApi} from "../api/deviceApi"
 import {subscriptionApi} from "../api/subscriptionApi"
+import {magicApi} from "../api/magicApi"
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -34,7 +35,8 @@ export const store = configureStore({
     [quizApi.reducerPath]: quizApi.reducer,
     [storiesApi.reducerPath]: storiesApi.reducer,
     [deviceApi.reducerPath]: deviceApi.reducer,
-    [subscriptionApi.reducerPath]: subscriptionApi.reducer
+    [subscriptionApi.reducerPath]: subscriptionApi.reducer,
+    [magicApi.reducerPath]: magicApi.reducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -48,6 +50,7 @@ export const store = configureStore({
        .concat(storiesApi.middleware)
        .concat(deviceApi.middleware)
        .concat(subscriptionApi.middleware)
+       .concat(magicApi.middleware)
       .concat(__DEV__ ? [logger] : []),
   devTools: __DEV__,
 });

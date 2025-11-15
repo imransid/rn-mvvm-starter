@@ -165,8 +165,7 @@ const HomeScreen = () => {
                                 </View>
                             }
                             onPress={() =>
-                                console.log("okok")
-                                // router.push("./stories/create_stories")
+                                navigation.navigate("CreateStoryScreen")
                             }
                         />
 
@@ -174,9 +173,7 @@ const HomeScreen = () => {
                             <TouchableOpacity
                                 style={styles.storyHistoryButton}
                                 onPress={() =>
-
-                                    console.log("okoko")
-                                    // router.push("./stories")
+                                    navigation.navigate("StoryScreen")
                                 }
                             >
                                 <Svg width={22} height={22} viewBox="0 0 22 22" fill="none">
