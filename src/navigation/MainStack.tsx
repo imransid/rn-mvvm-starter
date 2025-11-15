@@ -18,7 +18,19 @@ import JournalScreen from "../features/home/JournalScreen";
 import AddJournal from "../features/home/CreateJournal"
 import Emotional from "../features/emotional/EmotionalScreen"
 import Profile from "../features/profile/ProfileScreen"
-
+import FamilyProfile from '../features/profile/FamilyProfile'
+import FamilyProfileDetail from '../features/profile/FamilyProfileDetail'
+import ChildProfileDetail from "../features/profile/ChilderProfileScreen"
+import ChildProfile from "../features/profile/ChildProfile"
+import ProfileSettingsScreen from "../features/profile/ProfileSettingsScreen"
+import PasswordChangeScreen from "../features/profile/PasswordChangeScreen";
+import ComingSoonScreen from "../features/profile/ComingSoonScreen"
+import ConnectedDevicesScreen from "../features/profile/ConnectedDevice"
+import AboutScreen from "../features/profile/AboutPage"
+import PremiumSubscriptionScreen from "../features/subscription/SubscriptionScreen"
+import MySubscriptionScreen from "../features/subscription/MyPlanScreen"
+import PlanSubscriptionScreen from "../features/subscription/PlanScreen"
+import SubscriptionCancellationScreen from "../features/subscription/SubscriptionCancellationScreen"
 
 export type MainStackParamList = {
     Home: undefined;
@@ -37,6 +49,19 @@ export type MainStackParamList = {
     journals: undefined
     AddJournal: undefined
     Emotional: undefined
+    FamilyProfile: undefined
+    FamilyProfileDetail: undefined
+    ChildProfileDetail: undefined
+    ChildProfile: undefined
+    ProfileSettingsScreen: undefined
+    PasswordChangeScreen: undefined
+    ComingSoonScreen: undefined
+    ConnectedDevicesScreen: undefined
+    AboutScreen: undefined
+    PremiumSubscriptionScreen: undefined
+    MySubscriptionScreen: undefined
+    PlanSubscriptionScreen: undefined
+    SubscriptionCancellationScreen: undefined
 };
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
@@ -69,6 +94,26 @@ export default function MainStack() {
             <Stack.Screen name="AddJournal" component={AddJournal} />
             <Stack.Screen name="Emotional" component={Emotional} />
             <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="FamilyProfile" component={FamilyProfile} />
+
+            <Stack.Screen name="FamilyProfileDetail" component={FamilyProfileDetail} />
+            <Stack.Screen name="ChildProfileDetail" component={ChildProfileDetail} />
+            <Stack.Screen name="ChildProfile" component={ChildProfile} />
+            <Stack.Screen name="ProfileSettingsScreen" component={ProfileSettingsScreen} />
+            <Stack.Screen name="PasswordChangeScreen" component={PasswordChangeScreen} />
+            <Stack.Screen name="ComingSoonScreen" component={ComingSoonScreen} />
+            <Stack.Screen name="ConnectedDevicesScreen" component={ConnectedDevicesScreen} />
+
+            <Stack.Screen name="PremiumSubscriptionScreen" component={PremiumSubscriptionScreen} />
+            <Stack.Screen name="MySubscriptionScreen" component={MySubscriptionScreen} />
+            <Stack.Screen name="PlanSubscriptionScreen" component={PlanSubscriptionScreen} />
+
+            <Stack.Screen name="AboutScreen" component={AboutScreen} />
+
+            <Stack.Screen name="SubscriptionCancellationScreen" component={SubscriptionCancellationScreen} />
+
+
+
 
 
 

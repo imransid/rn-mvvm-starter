@@ -19,6 +19,7 @@ type ButtonProps = {
     sideimage?: any; // Image source
     icon?: React.ReactNode; // Vector icon or any React element
     styles?: StyleProp<ViewStyle> | StyleProp<TextStyle>;
+    disabled?: boolean
 };
 
 const Button: React.FC<ButtonProps> = ({
@@ -30,9 +31,11 @@ const Button: React.FC<ButtonProps> = ({
     sideimage,
     icon,
     styles,
+    disabled
 }) => {
     return (
         <TouchableOpacity
+            disabled={disabled}
             onPress={loading ? undefined : onclick}
             activeOpacity={0.7}
             style={[

@@ -8,16 +8,16 @@ import {
     View,
     StyleSheet,
 } from "react-native";
-import Spinner from "react-native-loading-spinner-overlay";
 import Button from "../../components/Button";
 import Header from "../../components/Header";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { colors, toasts } from "../../assets/lib";
 import { useDeleteSubscriptionMutation, useGetMySubscriptionQuery } from "../../api/subscriptionApi";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 const SubscriptionCancellationScreen = () => {
+    // State to track user's reasons for cancellation
     const [reasons, setReasons] = useState<any>({
         tooExpensive: false,
         notUsingFeatures: false,
@@ -26,9 +26,14 @@ const SubscriptionCancellationScreen = () => {
         other: false,
     });
 
+
+    const [deleteSubscription, { isLoading, isError, data }] = useDeleteSubscriptionMutation();
+
+
+    const navigation = useNavigation();
+
     const isFocused = useIsFocused();
 
-    // Fetch subscriptions
     const {
         data: subscriptions,
         isLoading: loadingSub,
@@ -36,21 +41,21 @@ const SubscriptionCancellationScreen = () => {
         refetch: refetchSubscriptions,
     } = useGetMySubscriptionQuery(undefined, { skip: !isFocused });
 
-    // Delete subscription mutation
-    const [deleteSubscription, { isLoading: deleting }] = useDeleteSubscriptionMutation();
 
-    // Handle delete
     const handleDelete = async (subscriptionId: number) => {
         try {
             await deleteSubscription(subscriptionId).unwrap();
             toasts("Deleted successfully", "success");
             refetchSubscriptions(); // refresh subscriptions
+            navigation.navigate("PremiumSubscriptionScreen" as never)
+
         } catch (error: any) {
             console.error("Failed to delete subscription:", error);
             toasts(error?.data?.message || "Failed to delete", "error");
         }
     };
 
+    // Handle reason selection
     const handleReasonChange = (key: string) => {
         setReasons((prev: any) => ({ ...prev, [key]: !prev[key] }));
     };
@@ -71,12 +76,6 @@ const SubscriptionCancellationScreen = () => {
         >
             <Header title="Canceling your plan?" rightImage={false} />
             <ScrollView contentContainerStyle={styles.container}>
-                {/* Spinner for loading */}
-                <Spinner
-                    visible={loadingSub || deleting}
-                    textStyle={{ color: "#fff" }}
-                />
-
                 {/* Notification */}
                 <View style={styles.notificationContainer}>
                     <Image
@@ -93,18 +92,52 @@ const SubscriptionCancellationScreen = () => {
                     </View>
                 </View>
 
-                {/* Subscription List */}
-                {subscriptions?.map((sub: any) => (
-                    <View key={sub.subscription_id} style={styles.subscriptionRow}>
-                        <Text style={styles.subscriptionName}>{sub.name}</Text>
-                        <Button
-                            name="Delete"
-                            bgColor="red"
-                            onclick={() => handleDelete(sub.subscription_id)}
-                            disabled={deleting}
-                        />
+                {/* Subscription Details */}
+                <View style={styles.subscriptionDetails}>
+                    <Ionicons
+                        name="information-circle-outline"
+                        size={24}
+                        color="#e3aeaa"
+                    />
+                    <Text style={styles.subscriptionText}>
+                        Your ZenFamy Premium subscription is active until December 31,
+                        2023.
+                    </Text>
+                </View>
+
+                {/* Special Offer Header */}
+                <Text style={styles.sectionTitle}>One last thing before you go...</Text>
+
+                {/* Special Offer Details */}
+                <View style={styles.specialOfferContainer}>
+                    <View style={styles.offerItem}>
+                        <FontAwesome name="times-circle-o" size={24} color="#e3aeaa" />
+                        <Text style={styles.offerText}>Unlimited meditation sessions</Text>
                     </View>
-                ))}
+                    <View style={styles.offerItem}>
+                        <FontAwesome name="times-circle-o" size={24} color="#e3aeaa" />
+                        <Text style={styles.offerText}>Personalized wellness tracking</Text>
+                    </View>
+                    <View style={styles.offerItem}>
+                        <FontAwesome name="times-circle-o" size={24} color="#e3aeaa" />
+                        <Text style={styles.offerText}>Ad-free experience</Text>
+                    </View>
+                </View>
+
+                {/* Special Offer Purchase */}
+                <View style={styles.specialOfferBox}>
+                    <Text style={styles.sectionTitle}>Special Offer</Text>
+                    <View style={styles.offerPriceRow}>
+                        <Text style={styles.offerPrice}>$99.99</Text>
+                        <Text style={styles.offerPeriod}>/year</Text>
+                    </View>
+                    <Text style={styles.offerDescription}>
+                        Enjoy 30 extra days of full access for $XX. Stay connected to
+                        stories, tips, and Zenio.
+                    </Text>
+                    <Button name="Accept Offer" bgColor={colors.secondaryTextColor} />
+                    <Button name="Start Free Trial" bgColor={"#8dbfaa"} />
+                </View>
 
                 {/* Feedback Section */}
                 <View style={styles.feedbackContainer}>
@@ -131,6 +164,13 @@ const SubscriptionCancellationScreen = () => {
                 <Button
                     name="Confirm Cancellation"
                     bgColor={colors.secondaryTextColor}
+                    onclick={() => {
+                        if (subscriptions !== undefined) {
+                            if (subscriptions.length > 0) {
+                                handleDelete(subscriptions[0].subscription_id)
+                            }
+                        }
+                    }}
                 />
 
                 <View style={{ height: 100 }} />
@@ -153,17 +193,55 @@ const styles = StyleSheet.create({
     notificationImage: { width: 40, height: 40, marginRight: 8 },
     notificationTextContainer: { flex: 1 },
     notificationText: { fontSize: 13, fontWeight: "bold" },
-    subscriptionRow: {
+    subscriptionDetails: {
+        backgroundColor: "#fff",
         flexDirection: "row",
-        justifyContent: "space-between",
         alignItems: "center",
-        padding: 12,
+        padding: 16,
+        borderRadius: 8,
+        marginBottom: 16,
+        shadowColor: "#000",
+        shadowOpacity: 0.05,
+        shadowOffset: { width: 0, height: 1 },
+        shadowRadius: 3,
+        elevation: 2,
+    },
+    subscriptionText: { fontSize: 14, color: "#6b7280", marginLeft: 8 },
+    sectionTitle: { fontSize: 16, fontWeight: "600", marginBottom: 8 },
+    specialOfferContainer: {
         backgroundColor: "#fff",
         borderRadius: 8,
-        marginBottom: 12,
+        padding: 16,
+        marginBottom: 16,
+        shadowColor: "#000",
+        shadowOpacity: 0.05,
+        shadowOffset: { width: 0, height: 1 },
+        shadowRadius: 3,
+        elevation: 2,
     },
-    subscriptionName: { fontSize: 14, color: "#6b7280" },
-    sectionTitle: { fontSize: 16, fontWeight: "600", marginBottom: 8 },
+    offerItem: {
+        flexDirection: "row",
+        alignItems: "center",
+        paddingVertical: 8,
+        borderBottomWidth: 1,
+        borderBottomColor: "#f3f4f6",
+    },
+    offerText: { fontSize: 14, color: "#6b7280", marginLeft: 8 },
+    specialOfferBox: {
+        backgroundColor: "#fff",
+        borderRadius: 8,
+        padding: 16,
+        marginBottom: 16,
+        shadowColor: "#000",
+        shadowOpacity: 0.05,
+        shadowOffset: { width: 0, height: 1 },
+        shadowRadius: 3,
+        elevation: 2,
+    },
+    offerPriceRow: { flexDirection: "row", alignItems: "flex-end", marginBottom: 8 },
+    offerPrice: { fontSize: 29, fontWeight: "bold", marginRight: 4 },
+    offerPeriod: { fontSize: 12, marginBottom: 2 },
+    offerDescription: { fontSize: 12, marginBottom: 8, color: "#6b7280" },
     feedbackContainer: {
         backgroundColor: "#fff",
         borderRadius: 8,

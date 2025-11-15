@@ -34,7 +34,11 @@ const ChildrenScroller: React.FC<Props> = ({ onPressChild, colors }) => {
     const navigation = useNavigation();
     const dispatch = useDispatch<any>();
     // RTK Query hook
-    const { data: children, isLoading, isError } = useGetMyChildrenQuery();
+    // const { data: children, isLoading, isError } = useGetMyChildrenQuery();
+    const { data: children, isLoading, isError } = useGetMyChildrenQuery(
+        undefined, // first argument is the query parameter (payload)
+        { refetchOnFocus: true } // second argument is options
+    );
 
     const fallbackAvatar = useMemo<ImageSourcePropType>(
         () => require("../../assets/images/imoji/animoji.png"),

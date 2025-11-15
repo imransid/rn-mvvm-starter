@@ -16,11 +16,11 @@ interface Language {
 }
 
 interface BottomSheetProps {
-  setValue: (val: string) => void;
-  selectedValue: string;
+  setValue: any;
+  selectedValue: any;
   setShowModal: (val: boolean) => void;
   showModal: boolean;
-  data: Language[];
+  data: Language[] | any;
 }
 
 const BottomSheet: React.FC<BottomSheetProps> = ({

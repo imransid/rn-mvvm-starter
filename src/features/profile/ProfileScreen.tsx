@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -8,14 +8,15 @@ import {
     TouchableOpacity,
     StyleSheet,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { logout } from "../auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
-
+import { useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
+import api from "../../api/redirectApi"
 import CountryModal from "../../components/CountryModal";
 import MainNav from "../home/MainNav";
 import NavExpand from "../home/NavExpand";
 import Switch from "../../components/Switch";
+
 // import { myFamily } from "@/redux/slices/familySlice";
 // import { listMySubscriptions } from "@/redux/slices/subscriptionSlice";
 
@@ -31,8 +32,26 @@ import Profile from "./svgs/Profile";
 import Subscription from "./svgs/Subcriptions";
 import ExitExpand from "../home/ExitModal";
 import { RootState } from "../../app/store";
+import { clearTokens } from "../../utils/secureStorage";
+import Svg, { Path } from "react-native-svg";
+import { useGetMySubscriptionQuery } from "../../api/subscriptionApi";
 
 const SettingsScreen = () => {
+
+    const isFocused = useIsFocused();
+
+    const { data: subscriber, refetch, isLoading, isError } = useGetMySubscriptionQuery(undefined, {
+        skip: !isFocused, // skip fetching if screen is not focused
+    });
+
+    // Refetch every time screen becomes focused
+    useEffect(() => {
+        if (isFocused) {
+            refetch();
+        }
+    }, [isFocused, refetch]);
+
+
     const [showNav, setShowNav] = useState(false);
     const [isNotifOn, setIsNotifOn] = useState(false);
     const [showLanguageModal, setShowLanguageModal] = useState(false);
@@ -41,32 +60,44 @@ const SettingsScreen = () => {
 
     const [exitNav, setExitNav] = useState(false);
 
-    const dispatch = useDispatch();
-    const navigation = useNavigation<any>();
-
     const users = useSelector((state: RootState) => state.root.auth.user);
-    // const { family, loading } = useSelector((state: any) => state.family);
-    // const { subscriptions } = useSelector((state: any) => state.subscriptions);
 
-    const family: any = []
+
     const subscriptions = []
     const loading = false
 
-    // const getMyFamily = async () => {
-    //     try {
-    //         await dispatch(myFamily()).unwrap();
-    //     } catch (err) {
-    //         console.log("Family error:", err);
-    //     }
-    // };
 
-    // useEffect(() => {
-    //     getMyFamily();
-    //     dispatch(listMySubscriptions());
-    // }, [dispatch]);
+    const [family, setFamily] = useState<any[]>([]);
+    const dispatch = useDispatch();
+    const navigation = useNavigation<any>();
+    const token = useSelector((state: RootState) => state.root.auth.access_token);
 
-    const logout = async () => {
-        await AsyncStorage.removeItem("access_token");
+    // Fetch family data when screen is focused
+    useFocusEffect(
+        useCallback(() => {
+            const fetchFamily = async () => {
+                try {
+                    const response = await api.get("/families/me", {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    console.log("Family API response:", response.data);
+                    setFamily(response.data); // update local state
+                } catch (err) {
+                    console.log("Failed to fetch family:", err);
+                }
+            };
+
+            fetchFamily();
+        }, [token]) // re-run if token changes
+    );
+
+    const logoutAction = async () => {
+
+        await clearTokens()
+        dispatch(logout())
+
         navigation.navigate("Onboarding");
     };
 
@@ -79,12 +110,12 @@ const SettingsScreen = () => {
                     label: users?.first_name ?? "No Name",
                     subtitle: users?.email ?? "",
                     avatar: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-                    route: "Account",
+                    route: "ProfileSettingsScreen",
                 },
                 {
                     icon: <Female />,
                     label: "Children Profiles",
-                    route: "Children",
+                    route: "ChildProfileDetail",
                 },
                 {
                     icon: loading ? <Text>⏳</Text> : <Family />,
@@ -94,8 +125,9 @@ const SettingsScreen = () => {
                 {
                     icon: <Subscription />,
                     label: "Subscription",
-                    rightLabel: subscriptions.length > 0 ? "Premium" : undefined,
-                    route: subscriptions.length > 0 ? "MyPlan" : "Subscription",
+                    rightLabel: subscriber?.length > 0 ? "Premium" : undefined,
+                    route: subscriber?.length > 0 ? "MySubscriptionScreen" : "PremiumSubscriptionScreen",
+                    // "MyPlan" : "Subscription",
                 },
             ],
         },
@@ -137,8 +169,31 @@ const SettingsScreen = () => {
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.header}>
                     <Text style={styles.headerTitle}>Settings</Text>
-                    <TouchableOpacity style={styles.logoutContainer} onPress={logout}>
-                        <Text style={styles.logoutIcon}>🚪</Text>
+                    <TouchableOpacity style={styles.logoutContainer} onPress={logoutAction}>
+                        <Text style={styles.logoutIcon}>
+
+                            <Svg
+                                x="http://www.w3.org/2000/svg"
+                                width="20"
+                                height="20"
+                                viewBox="0 0 20 20"
+                                fill="none"
+                            >
+                                <Path
+                                    d="M12.75 15.375C12.6764 17.2269 11.1331 18.7994 9.06564 18.7488C8.58465 18.737 7.99013 18.5694 6.80112 18.234C3.93961 17.4268 1.45555 16.0703 0.859555 13.0315C0.75 12.473 0.75 11.8444 0.75 10.5873L0.75 8.91274C0.75 7.65561 0.75 7.02705 0.859556 6.46846C1.45555 3.42965 3.93961 2.07316 6.80112 1.26603C7.99014 0.930645 8.58465 0.762954 9.06564 0.751187C11.1331 0.70061 12.6764 2.27307 12.75 4.12501"
+                                    stroke="#FF0000"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                />
+                                <Path
+                                    d="M18.75 9.75H7.75M18.75 9.75C18.75 9.04977 16.7557 7.74153 16.25 7.25M18.75 9.75C18.75 10.4502 16.7557 11.7585 16.25 12.25"
+                                    stroke="#FF0000"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                            </Svg>
+                        </Text>
                         <Text style={styles.logoutText}>Logout</Text>
                     </TouchableOpacity>
                 </View>
